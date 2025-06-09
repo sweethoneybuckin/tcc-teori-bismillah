@@ -1,0 +1,390 @@
+### Simple Damage Reporting API Tests
+### Base URL: http://localhost:3000
+
+# Test server connection
+GET http://localhost:3000/
+
+###############################################
+# USER MANAGEMENT TESTS
+###############################################
+
+### 1. Register a new user
+POST http://localhost:3000/api/users/register
+Content-Type: application/json
+
+{
+  "email": "john.doe@university.edu",
+  "password": "password123",
+  "name": "John Doe",
+  "student_id": "2021001"
+}
+
+### 2. Register another user
+POST http://localhost:3000/api/users/register
+Content-Type: application/json
+
+{
+  "email": "jane.smith@university.edu",
+  "password": "password123",
+  "name": "Jane Smith",
+  "student_id": "2021002"
+}
+
+### 3. Register a third user
+POST http://localhost:3000/api/users/register
+Content-Type: application/json
+
+{
+  "email": "alice.johnson@university.edu",
+  "password": "password123",
+  "name": "Alice Johnson",
+  "student_id": "2021003"
+}
+
+### 4. Login user (John Doe)
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@university.edu",
+  "password": "password123"
+}
+
+### 5. Login user (Jane Smith)
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "jane.smith@university.edu",
+  "password": "password123"
+}
+
+### 6. Try login with wrong password (should fail)
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@university.edu",
+  "password": "wrongpassword"
+}
+
+### 7. Try login with non-existent email (should fail)
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "nonexistent@university.edu",
+  "password": "password123"
+}
+
+### 8. Get all users
+GET http://localhost:3000/api/users
+
+### 9. Get user by ID (replace 1 with actual user ID)
+GET http://localhost:3000/api/users/1
+
+### 10. Update user (replace 1 with actual user ID)
+PUT http://localhost:3000/api/users/1
+Content-Type: application/json
+
+{
+  "name": "John Doe Updated",
+  "student_id": "2021001-UPDATED"
+}
+
+### 11. Try duplicate email registration (should fail)
+POST http://localhost:3000/api/users/register
+Content-Type: application/json
+
+{
+  "email": "john.doe@university.edu",
+  "password": "password123",
+  "name": "Duplicate User",
+  "student_id": "2021999"
+}
+
+### 12. Try duplicate student_id registration (should fail)
+POST http://localhost:3000/api/users/register
+Content-Type: application/json
+
+{
+  "email": "duplicate@university.edu",
+  "password": "password123",
+  "name": "Duplicate Student ID",
+  "student_id": "2021001"
+}
+
+###############################################
+# REPORT MANAGEMENT TESTS (JSON)
+###############################################
+
+### 13. Create report without photo (User 1)
+POST http://localhost:3000/api/reports
+Content-Type: application/json
+
+{
+  "description": "The projector in Computer Lab A is not working. When I try to turn it on, nothing happens. The power LED doesn't light up either.",
+  "report_title": "Broken Projector in Lab A",
+  "location": "Computer Lab A, Building A, Floor 2",
+  "user_id": 1
+}
+
+### 14. Create another report without photo (User 2)
+POST http://localhost:3000/api/reports
+Content-Type: application/json
+
+{
+  "description": "The air conditioner in Lecture Hall 101 is making very loud noises and not cooling the room properly. Students are complaining about the temperature.",
+  "report_title": "AC Malfunction in Lecture Hall 101",
+  "location": "Lecture Hall 101, Building B, Floor 1",
+  "user_id": 2
+}
+
+### 15. Create third report without photo (User 3)
+POST http://localhost:3000/api/reports
+Content-Type: application/json
+
+{
+  "description": "The WiFi router in Building A Floor 2 is completely offline. No internet connectivity in the entire floor.",
+  "report_title": "WiFi Router Offline",
+  "location": "Building A, Floor 2, Network Closet",
+  "user_id": 3
+}
+
+### 16. Create fourth report (User 1)
+POST http://localhost:3000/api/reports
+Content-Type: application/json
+
+{
+  "description": "Several windows in the library reading room have broken latches and cannot be closed properly.",
+  "report_title": "Broken Window Latches",
+  "location": "Library Reading Room, Building C",
+  "user_id": 1
+}
+
+### 17. Create fifth report (User 2)
+POST http://localhost:3000/api/reports
+Content-Type: application/json
+
+{
+  "description": "The main entrance automatic door is stuck halfway open and students have to squeeze through.",
+  "report_title": "Stuck Automatic Door",
+  "location": "Main Entrance, Building A",
+  "user_id": 2
+}
+
+### 18. Get all reports
+GET http://localhost:3000/api/reports
+
+### 19. Get reports with pagination
+GET http://localhost:3000/api/reports?page=1&limit=3
+
+### 20. Get reports with pagination (page 2)
+GET http://localhost:3000/api/reports?page=2&limit=3
+
+### 21. Search reports by title
+GET http://localhost:3000/api/reports?search=projector
+
+### 22. Search reports by location
+GET http://localhost:3000/api/reports?search=building a
+
+### 23. Search reports by description
+GET http://localhost:3000/api/reports?search=broken
+
+### 24. Get recent reports
+GET http://localhost:3000/api/reports/recent
+
+### 25. Get recent reports (limit 3)
+GET http://localhost:3000/api/reports/recent?limit=3
+
+### 26. Get report by ID (replace 1 with actual report ID)
+GET http://localhost:3000/api/reports/1
+
+### 27. Get reports by user 1
+GET http://localhost:3000/api/users/1/reports
+
+### 28. Get reports by user 2
+GET http://localhost:3000/api/users/2/reports
+
+### 29. Update report (replace 1 with actual report ID)
+PUT http://localhost:3000/api/reports/1
+Content-Type: application/json
+
+{
+  "description": "UPDATED: The projector in Computer Lab A is completely dead. Maintenance team confirmed it needs replacement.",
+  "report_title": "URGENT: Projector Replacement Needed",
+  "location": "Computer Lab A, Building A, Floor 2 - Room A201"
+}
+
+###############################################
+# FILE UPLOAD TESTS (Use Postman or similar tool)
+###############################################
+
+### 30. Create report with photo (multipart/form-data)
+### NOTE: This test requires a tool like Postman that supports file uploads
+### POST http://localhost:3000/api/reports
+### Content-Type: multipart/form-data
+### 
+### Form data:
+### - photo: [select an image file]
+### - description: Water damage on the ceiling near the projector
+### - report_title: Water Damage in Classroom
+### - location: Room 203, Building B
+### - user_id: 1
+
+### 31. Update report with photo (multipart/form-data)
+### NOTE: This test requires a tool like Postman that supports file uploads
+### PUT http://localhost:3000/api/reports/1
+### Content-Type: multipart/form-data
+###
+### Form data:
+### - photo: [select a new image file]
+### - description: Updated description with photo evidence
+### - report_title: Updated Report with Photo
+
+###############################################
+# ERROR TESTING
+###############################################
+
+### 32. Try to create report with missing fields
+POST http://localhost:3000/api/reports
+Content-Type: application/json
+
+{
+  "description": "Missing required fields"
+}
+
+### 33. Try to create report with non-existent user
+POST http://localhost:3000/api/reports
+Content-Type: application/json
+
+{
+  "description": "This should fail",
+  "report_title": "Test Report",
+  "location": "Test Location",
+  "user_id": 999
+}
+
+### 34. Try to register user with missing fields
+POST http://localhost:3000/api/users/register
+Content-Type: application/json
+
+{
+  "email": "incomplete@university.edu"
+}
+
+### 35. Try to get non-existent user
+GET http://localhost:3000/api/users/999
+
+### 36. Try to get non-existent report
+GET http://localhost:3000/api/reports/999
+
+### 37. Try to update non-existent report
+PUT http://localhost:3000/api/reports/999
+Content-Type: application/json
+
+{
+  "description": "This should fail"
+}
+
+### 38. Try to login with missing fields
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@university.edu"
+}
+
+###############################################
+# ADVANCED SEARCH TESTS
+###############################################
+
+### 39. Search with no results
+GET http://localhost:3000/api/reports?search=nonexistent
+
+### 40. Search with special characters
+GET http://localhost:3000/api/reports?search=A&B
+
+### 41. Search case insensitive
+GET http://localhost:3000/api/reports?search=PROJECTOR
+
+### 42. Empty search (should return all)
+GET http://localhost:3000/api/reports?search=
+
+### 43. Pagination with search
+GET http://localhost:3000/api/reports?search=building&page=1&limit=2
+
+###############################################
+# RELATIONSHIP TESTS
+###############################################
+
+### 44. Get user with all their reports
+GET http://localhost:3000/api/users/1
+
+### 45. Get user with no reports (if any)
+GET http://localhost:3000/api/users/3
+
+### 46. Get detailed report with user info
+GET http://localhost:3000/api/reports/1
+
+###############################################
+# DELETE TESTS (USE WITH CAUTION)
+###############################################
+
+### 47. Try to delete user with reports (should fail)
+# DELETE http://localhost:3000/api/users/1
+
+### 48. Delete a specific report
+# DELETE http://localhost:3000/api/reports/5
+
+### 49. Try to delete non-existent report
+# DELETE http://localhost:3000/api/reports/999
+
+### 50. Delete user without reports (create a new user first, then delete)
+# DELETE http://localhost:3000/api/users/4
+
+###############################################
+# EDGE CASES
+###############################################
+
+### 51. Very long description
+POST http://localhost:3000/api/reports
+Content-Type: application/json
+
+{
+  "description": "This is a very long description that contains a lot of text to test the TEXT field limit. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  "report_title": "Long Description Test",
+  "location": "Test Location",
+  "user_id": 1
+}
+
+### 52. Special characters in fields
+POST http://localhost:3000/api/reports
+Content-Type: application/json
+
+{
+  "description": "Report with special characters: !@#$%^&*()_+-=[]{}|;':\",./<>?",
+  "report_title": "Special Chars: !@#$%",
+  "location": "Location with émojis 🏢 and àccénts",
+  "user_id": 1
+}
+
+### 53. Update password
+PUT http://localhost:3000/api/users/1
+Content-Type: application/json
+
+{
+  "password": "newpassword123"
+}
+
+### 54. Login with new password
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@university.edu",
+  "password": "newpassword123"
+}
+
+### 55. Large page number
+GET http://localhost:3000/api/reports?page=100&limit=10
